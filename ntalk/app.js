@@ -1,6 +1,10 @@
 var express = require('express');
-
-var routes = require('./routes/index');
+var path = require('path');
+var load = require('express-load');
+var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+var session = require('express-session');
+var methodOverride = require('method-override');
 
 var app = express();
 
@@ -8,12 +12,24 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-// uncomment after placing your favicon in /public
+app.use(cookieParser('ntalk'));
+app.use(session({
+    secret: 'ntalk',
+    resave: true,
+    saveUninitialized: true
+}));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes.index);
-app.use('/usuarios', routes.user.index);
+load('models')
+    .then('controllers')
+    .then('routes')
+    .into(app);
 
 app.listen(3000, function() {
-  console.log("Ntalk no ar.");
+    console.log('Ntalk no ar.');
 });

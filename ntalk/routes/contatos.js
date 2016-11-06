@@ -1,14 +1,15 @@
 module.exports = function(app){
     
     var contatos = app.controllers.contatos;  
+    var autenticar = require('./../middlewares/autenticador');
 
-    app.get('/contatos', contatos.index);
-    app.get('/contatos/:id', contatos.show);
-    app.get('/contatos/:id/editar', contatos.edit);
+    app.get('/contatos', autenticar, contatos.index);
+    app.get('/contatos/:id', autenticar, contatos.show);
+    app.get('/contatos/:id/editar', autenticar, contatos.edit);
     
-    app.post('/contatos', contatos.create);
+    app.post('/contatos', autenticar, contatos.create);
 
-    app.put('/contatos/:id', contatos.update);
+    app.put('/contatos/:id', autenticar, contatos.update);
 
-    app.delete('/contatos/:id', contatos.destroy);
+    app.delete('/contatos/:id', autenticar, contatos.destroy);
 };
